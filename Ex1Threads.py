@@ -1,50 +1,86 @@
 import logging
 import threading
-import time
+import sys
 import random
 
+v1: list = []
+v2: list = []
+c: list = []
+gab: list = []
+threads = []
+#n: int
+#t: int
+coef: int
+resto: int
 
-def thread_function(id,vetor1, vetor2, inicio, fim, saida):
+#if n%t != 0:
+#    print(f"Divisão de trabalho impar não implementada")
+    #sys.exit(1)
+
+def sum(v1,v2,begin, end):
+    for i in range(begin, end):
+        logging.info(f" {v1[i]}+{v2[i]} = {v1[i]+v2[i]}")
+        #print(f" {v1[i]}+{v2[i]} = {v1[i]+v2[i]}")
+        c.append(v1[i]+v2[i])
+
+
+def gabarito(v1,v2):
     
-    for i in range(inicio,fim):
-        saida[i] = vetor1[i] + vetor2[i]
-
-        print(f"{vetor1[i]} + {vetor2[i]} = {saida[i]}")
-
-
-if __name__ == "__main__":  
-
-    num1 = int(input('Digite o tamanho dos vetores : '))
-    num_threads = int(input("Digite o número de threads: "))
-
-
-    vetor1 = [random.randint(0, 100) for _ in range(num1)]
-    vetor2 = [random.randint(0, 100) for _ in range(num1)]
-    print(f'v1: {vetor1}\nv2: {vetor2}')
-    saida = [0 for _ in range(num1)]
-    print(f'saida: {saida}')
-    threadsnecessarias = num1//num_threads                            #Dividindo o tamanho do vetor pela quantidade de threads
-    inicio = 0
-    fim = threadsnecessarias
+    for i in range(len(v1)):
+        gab.append(v1[i]+v2[i])
+    
+gabarito(v1,v2)
 
 
 
-    threads = [] #armazena os descritores das threads
 
-    for i in range(num_threads):
-        t = threading.Thread(target=thread_function, args=(i,vetor1, vetor2, inicio, fim, saida))
-        threads.append(t)
-        inicio = fim
-        fim += threadsnecessarias
+def main():
 
-    # Inicia as threads
-    for t in threads:
-        t.start()
+    format = "%(asctime)s: %(message)s"
+    logging.basicConfig(format=format, level=logging.INFO, datefmt="%H:%M:%S")
 
-    # Comando para esperar até que todas as threads tenham terminado
+    n = int(input("Digite a quantidade de valores do vetor: "))
+    t = int(input("Digite o número de threads: "))
+    resto = n%t
+    coef = int(n/t)
+
+    v1 = random.sample(range(100), n)
+    v2 = random.sample(range(100), n)
+    resto = resto-1
+    for i in range(t):
+        if i==0:
+            begin = i*coef
+            end = i*coef+coef+resto
+        elif i == t-1:
+            begin = end
+            end = n
+
+        else:
+            begin = end
+            end = i*coef+coef+resto
+
+        
+        logging.info(f'Begin: {begin}  end: {end}')
+        logging.info("Main    : before creating thread")
+        th = threading.Thread(target=sum, args=(v1,v2,begin, end)) #inicializa a thread, informa o nome da função e os parâmetros
+        logging.info("Main    : before running thread")
+        th.start()
+        threads.append(th)
+        logging.info("Main    : wait for the thread to finish")
+            #sum(v1,v2,begin, end)
+        
+    
     for t in threads:
         t.join()
 
 
-    print(vetor1,'+',vetor2,"=",saida)
-    #print(saida)
+    print("")
+    print(v1)
+    print(v2)
+    print(c)
+    logging.info(f"Gabarito: {gab}")
+    logging.info("Main    : all done")
+
+
+
+main()
