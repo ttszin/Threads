@@ -4,16 +4,12 @@ import time
 import random
 
 
-def thread_function(id,vetor1, vetor2, inicio, fim):    
-    i = 0
-    for i in range(fim):
-        saida[i] = vetor1[i]+vetor2[i]
-        print("Saída = ",saida)
-        print("Vetor2 = ",vetor2)
-
+def thread_function(id,vetor1, vetor2, inicio, fim, saida):
     
-   
+    for i in range(inicio,fim):
+        saida[i] = vetor1[i] + vetor2[i]
 
+        print(f"{vetor1[i]} + {vetor2[i]} = {saida[i]}")
 
 
 if __name__ == "__main__":  
@@ -24,8 +20,9 @@ if __name__ == "__main__":
 
     vetor1 = [random.randint(0, 100) for _ in range(num1)]
     vetor2 = [random.randint(0, 100) for _ in range(num1)]
+    print(f'v1: {vetor1}\nv2: {vetor2}')
     saida = [0 for _ in range(num1)]
-
+    print(f'saida: {saida}')
     threadsnecessarias = num1//num_threads                            #Dividindo o tamanho do vetor pela quantidade de threads
     inicio = 0
     fim = threadsnecessarias
@@ -35,7 +32,7 @@ if __name__ == "__main__":
     threads = [] #armazena os descritores das threads
 
     for i in range(num_threads):
-        t = threading.Thread(target=thread_function, args=(vetor1, vetor2, saida, inicio, fim))
+        t = threading.Thread(target=thread_function, args=(i,vetor1, vetor2, inicio, fim, saida))
         threads.append(t)
         inicio = fim
         fim += threadsnecessarias
@@ -50,4 +47,4 @@ if __name__ == "__main__":
 
 
     print(vetor1,'+',vetor2,"=",saida)
-    print(saida)
+    #print(saida)
