@@ -1,5 +1,7 @@
 import numpy as np
-import multiprocessing
+import threading
+import random
+import time
 
 # Função que realiza a multiplicação de duas matrizes A e B
 def multiply_matrices(A, B, result, i_start, i_end):
@@ -16,8 +18,8 @@ def main():
     num_threads = int(input("Digite o número de threads: "))
 
     # Geração das matrizes A e B com valores aleatórios
-    A = np.random.rand(M, N)
-    B = np.random.rand(N, P)
+    A = np.random.randint(10, size = (M, N))
+    B = np.random.randint(10, size = (N, P))
 
     # Criação da matriz resultante com valores zerados
     result = np.zeros((M, P))
@@ -30,7 +32,7 @@ def main():
     for i in range(num_threads):
         i_start = i * chunk_size
         i_end = i_start + chunk_size if i < num_threads - 1 else M
-        t = multiprocessing.Process(target=multiply_matrices, args=(A, B, result, i_start, i_end))
+        t = threading.Thread(target=multiply_matrices, args=(A, B, result, i_start, i_end))
         threads.append(t)
         t.start()
 
